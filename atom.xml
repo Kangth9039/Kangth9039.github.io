@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Kangth9039.github.io</id>
     <title>HhF的博客小站</title>
-    <updated>2021-02-25T02:57:02.862Z</updated>
+    <updated>2021-02-25T03:06:56.569Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Kangth9039.github.io"/>
     <link rel="self" href="https://Kangth9039.github.io/atom.xml"/>
@@ -10,6 +10,205 @@
     <logo>https://Kangth9039.github.io/images/avatar.png</logo>
     <icon>https://Kangth9039.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, HhF的博客小站</rights>
+    <entry>
+        <title type="html"><![CDATA[game]]></title>
+        <id>https://Kangth9039.github.io/post/game/</id>
+        <link href="https://Kangth9039.github.io/post/game/">
+        </link>
+        <updated>2021-02-25T03:06:10.000Z</updated>
+        <content type="html"><![CDATA[<p>贪吃蛇：</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;贪吃蛇小游戏&lt;/title&gt;
+&lt;style&gt;
+#myCanvas {
+    box-shadow: 0 0 6px #000;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;开始游戏&quot; onclick=&quot;beginGame();&quot;&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;canvas id=&quot;myCanvas&quot; width=&quot;450&quot; height=&quot;450&quot;&gt;&lt;/canvas&gt;
+
+&lt;script&gt;
+var canvas = document.getElementById(&quot;myCanvas&quot;);
+var ctx = canvas.getContext(&quot;2d&quot;);
+var w = 15; //格子宽、高
+var snaLen = 6; //初始长度
+var snake = []; //身体长度
+for (var i = 0; i &lt; snaLen; i++) {
+    snake[i] = new cell(i, 0, 39);
+}
+var head = snake[snaLen - 1]; //头部
+//初始食物
+var foodx = Math.ceil(Math.random() * 28 + 1);
+var foody = Math.ceil(Math.random() * 28 + 1);
+var food = new Food(foodx, foody);
+//食物
+function Food(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+}
+
+//身体
+function cell(x, y, d) {
+    this.x = x;
+    this.y = y;
+    this.d = d;
+    return this;
+}
+
+//动作
+function draw() {
+    ctx.clearRect(0, 0, 450, 450);
+    //画布局
+    //      for(var i = 0; i &lt; 30; i++){
+    //          ctx.strokeStyle = &quot;#ccc&quot;;//线条颜色
+    //          ctx.beginPath();
+    //          ctx.moveTo(0,i*w);
+    //          ctx.lineTo(450,i*w);
+
+    //          ctx.moveTo(i*w,0);
+    //          ctx.lineTo(i*w,450);
+    //          ctx.closePath();
+    //          ctx.stroke();
+    //      }
+    //画蛇身
+    for (var j = 0; j &lt; snake.length; j++) {
+        ctx.fillStyle = &quot;green&quot;;
+        if (j == snake.length - 1) {
+            ctx.fillStyle = &quot;red&quot;;
+        }
+        ctx.beginPath();
+        ctx.rect(snake[j].x * w, snake[j].y * w, w, w);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+    //出现食物
+    drawFood();
+    //吃到食物
+    if (head.x == food.x &amp;&amp; head.y == food.y) {
+        initFood();
+        food = new Food(foodx, foody);
+        //重新出现食物
+        drawFood();
+
+        //增加蛇的长度  有些小瑕疵，蛇身增长时应该是身体增长，而不是在蛇头上增长
+        var newCell = new cell(head.x, head.y, head.d);
+        switch (head.d) {
+            case 40:
+                newCell.y++;
+                break; //下
+            case 39:
+                newCell.x++;
+                break; //右
+            case 38:
+                newCell.y--;
+                break; //上
+            case 37:
+                newCell.x--;
+                break; //左
+        }
+        snake[snake.length] = newCell;
+        head = newCell;
+        //head = 
+    }
+}
+//随机初始化食物
+function initFood() {
+    foodx = Math.ceil(Math.random() * 28 + 1);
+    foody = Math.ceil(Math.random() * 28 + 1);
+    for (var i = 0; i &lt; snake.length; i++) {
+        if (snake[i].x == foodx &amp;&amp; snake[i].y == foody) {
+            initFood();
+        }
+    }
+}
+//画食物
+function drawFood() {
+    //绘制食物
+    ctx.fillStyle = &quot;orange&quot;;
+    ctx.beginPath();
+    ctx.rect(food.x * w, food.y * w, w, w);
+    ctx.closePath();
+    ctx.fill();
+}
+draw();
+//监听键盘事件
+document.onkeydown = function(e) {
+    //下40 ， 右边39，左边37，上38  键盘事件
+    var keyCode = e.keyCode;
+    if (head.d - keyCode != 2 &amp;&amp; head.d - keyCode != -2 &amp;&amp; keyCode &gt;= 37 &amp;&amp; keyCode &lt;= 40) {
+        moveSnake(keyCode);
+    }
+}
+//控制蛇移动方向
+function moveSnake(keyCode) {
+    var newSnake = [];
+    var newCell = new cell(head.x, head.y, head.d); //头
+    //身体
+    for (var i = 1; i &lt; snake.length; i++) {
+        newSnake[i - 1] = snake[i];
+    }
+    newSnake[snake.length - 1] = newCell;
+    newCell.d = keyCode;
+    switch (keyCode) {
+        case 40:
+            newCell.y++;
+            break; //下
+        case 39:
+            newCell.x++;
+            break; //右
+        case 38:
+            newCell.y--;
+            break; //上
+        case 37:
+            newCell.x--;
+            break; //左
+    }
+    snake = newSnake;
+    head = snake[snake.length - 1];
+    checkDeath();
+    draw();
+}
+//游戏规则
+function checkDeath() {
+    //超出边框
+    if (head.x &gt;= 30 || head.y &gt;= 30 || head.x &lt; 0 || head.y &lt; 0) {
+        alert(&quot;Game over!&quot;);
+        window.location.reload();
+    }
+    //咬到自己
+    for (var i = 0; i &lt; snake.length - 1; i++) {
+        if (head.x == snake[i].x &amp;&amp; head.y == snake[i].y) {
+            alert(&quot;Game over!&quot;);
+            window.location.reload();
+        }
+    }
+}
+//蛇自动走
+function moveClock() {
+    moveSnake(head.d);
+}
+var isMove = false;
+function beginGame() {
+    !isMove &amp;&amp; setInterval(moveClock, 300);
+    isMove = true;
+}
+
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>未停更</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[联机代码-Zhoumy提供]]></title>
         <id>https://Kangth9039.github.io/post/lian-ji-dai-ma-zhoumy-ti-gong/</id>

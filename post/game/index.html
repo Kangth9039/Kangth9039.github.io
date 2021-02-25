@@ -8,7 +8,7 @@
 <meta name="keywords" content="Gridea静态个人博客">
 <meta name="description" content="ricuroow2333">
 <meta name="theme-color" content="#000">
-<title>P1001 | HhF的博客小站</title>
+<title>game | HhF的博客小站</title>
 <link rel="shortcut icon" href="/favicon.ico?v=1614222412103">
 <link rel="stylesheet" href="/media/css/pisces.css">
 <link rel="stylesheet" href="/media/fonts/font-awesome.css">
@@ -38,8 +38,8 @@
 
 
 
-  <meta name="description" content="P1001" />
-  <meta name="keywords" content="solution" />
+  <meta name="description" content="game" />
+  <meta name="keywords" content="" />
 </head>
 
 <body>
@@ -344,8 +344,8 @@
           <div class="section bg-color post post-page">
             <section class="post-header">
   <h1 class="post-title">
-    <a class="post-title-link" href="https://Kangth9039.github.io/post/p1001/">
-      P1001
+    <a class="post-title-link" href="https://Kangth9039.github.io/post/game/">
+      game
     </a>
   </h1>
   <div class="post-meta">
@@ -353,45 +353,214 @@
     <span class="meta-item pc-show">
       <i class="fa fa-calendar-o"></i>
       <span class="language" data-lan="publish">发布于</span>
-      <span class="publish-time" data-t="2021-02-21 10:01:39">2021.02.21</span>
+      <span class="publish-time" data-t="2021-02-25 11:06:10">2021.02.25</span>
       <span class="post-meta-divider pc-show">|</span>
     </span>
     
     <span class="meta-item">
-      <i class="fa fa-folder-o"></i>
-      <span class="pc-show language" data-lan="category-in">分类于</span>
-      
-      
-      <a href="https://Kangth9039.github.io/tag/solution/">
-        <span>solution</span>
-      </a>
-      
-      
-    </span>
-    <span class="post-meta-divider">|</span>
-    
-    <span class="meta-item">
       <i class="fa fa-clock-o"></i>
-      <span>1<span class="language" data-lan="minute">分钟</span></span>
+      <span>5<span class="language" data-lan="minute">分钟</span></span>
     </span>
     <span class="meta-item">
       <span class="post-meta-divider">|</span>
       <i class="fa fa-file-word-o"></i>
-      <span>32<span class="pc-show language" data-lan="words">字数</span></span>
+      <span>747<span class="pc-show language" data-lan="words">字数</span></span>
     </span>
     
   </div>
 </section>
             <div class="post-body next-md-body" id="post_body">
-              <pre><code class="language-cpp">#include &lt;iostream&gt;
-using namespace std;
-int main(){
-    int a, b;
-    cin &gt;&gt; a &gt;&gt; b; // input
-    cout &lt;&lt; a + b &lt;&lt; endl; // output
-    return 0;
-} // DONE!
+              <p>贪吃蛇：</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;贪吃蛇小游戏&lt;/title&gt;
+&lt;style&gt;
+#myCanvas {
+    box-shadow: 0 0 6px #000;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;开始游戏&quot; onclick=&quot;beginGame();&quot;&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;canvas id=&quot;myCanvas&quot; width=&quot;450&quot; height=&quot;450&quot;&gt;&lt;/canvas&gt;
+
+&lt;script&gt;
+var canvas = document.getElementById(&quot;myCanvas&quot;);
+var ctx = canvas.getContext(&quot;2d&quot;);
+var w = 15; //格子宽、高
+var snaLen = 6; //初始长度
+var snake = []; //身体长度
+for (var i = 0; i &lt; snaLen; i++) {
+    snake[i] = new cell(i, 0, 39);
+}
+var head = snake[snaLen - 1]; //头部
+//初始食物
+var foodx = Math.ceil(Math.random() * 28 + 1);
+var foody = Math.ceil(Math.random() * 28 + 1);
+var food = new Food(foodx, foody);
+//食物
+function Food(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+}
+
+//身体
+function cell(x, y, d) {
+    this.x = x;
+    this.y = y;
+    this.d = d;
+    return this;
+}
+
+//动作
+function draw() {
+    ctx.clearRect(0, 0, 450, 450);
+    //画布局
+    //      for(var i = 0; i &lt; 30; i++){
+    //          ctx.strokeStyle = &quot;#ccc&quot;;//线条颜色
+    //          ctx.beginPath();
+    //          ctx.moveTo(0,i*w);
+    //          ctx.lineTo(450,i*w);
+
+    //          ctx.moveTo(i*w,0);
+    //          ctx.lineTo(i*w,450);
+    //          ctx.closePath();
+    //          ctx.stroke();
+    //      }
+    //画蛇身
+    for (var j = 0; j &lt; snake.length; j++) {
+        ctx.fillStyle = &quot;green&quot;;
+        if (j == snake.length - 1) {
+            ctx.fillStyle = &quot;red&quot;;
+        }
+        ctx.beginPath();
+        ctx.rect(snake[j].x * w, snake[j].y * w, w, w);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+    }
+    //出现食物
+    drawFood();
+    //吃到食物
+    if (head.x == food.x &amp;&amp; head.y == food.y) {
+        initFood();
+        food = new Food(foodx, foody);
+        //重新出现食物
+        drawFood();
+
+        //增加蛇的长度  有些小瑕疵，蛇身增长时应该是身体增长，而不是在蛇头上增长
+        var newCell = new cell(head.x, head.y, head.d);
+        switch (head.d) {
+            case 40:
+                newCell.y++;
+                break; //下
+            case 39:
+                newCell.x++;
+                break; //右
+            case 38:
+                newCell.y--;
+                break; //上
+            case 37:
+                newCell.x--;
+                break; //左
+        }
+        snake[snake.length] = newCell;
+        head = newCell;
+        //head = 
+    }
+}
+//随机初始化食物
+function initFood() {
+    foodx = Math.ceil(Math.random() * 28 + 1);
+    foody = Math.ceil(Math.random() * 28 + 1);
+    for (var i = 0; i &lt; snake.length; i++) {
+        if (snake[i].x == foodx &amp;&amp; snake[i].y == foody) {
+            initFood();
+        }
+    }
+}
+//画食物
+function drawFood() {
+    //绘制食物
+    ctx.fillStyle = &quot;orange&quot;;
+    ctx.beginPath();
+    ctx.rect(food.x * w, food.y * w, w, w);
+    ctx.closePath();
+    ctx.fill();
+}
+draw();
+//监听键盘事件
+document.onkeydown = function(e) {
+    //下40 ， 右边39，左边37，上38  键盘事件
+    var keyCode = e.keyCode;
+    if (head.d - keyCode != 2 &amp;&amp; head.d - keyCode != -2 &amp;&amp; keyCode &gt;= 37 &amp;&amp; keyCode &lt;= 40) {
+        moveSnake(keyCode);
+    }
+}
+//控制蛇移动方向
+function moveSnake(keyCode) {
+    var newSnake = [];
+    var newCell = new cell(head.x, head.y, head.d); //头
+    //身体
+    for (var i = 1; i &lt; snake.length; i++) {
+        newSnake[i - 1] = snake[i];
+    }
+    newSnake[snake.length - 1] = newCell;
+    newCell.d = keyCode;
+    switch (keyCode) {
+        case 40:
+            newCell.y++;
+            break; //下
+        case 39:
+            newCell.x++;
+            break; //右
+        case 38:
+            newCell.y--;
+            break; //上
+        case 37:
+            newCell.x--;
+            break; //左
+    }
+    snake = newSnake;
+    head = snake[snake.length - 1];
+    checkDeath();
+    draw();
+}
+//游戏规则
+function checkDeath() {
+    //超出边框
+    if (head.x &gt;= 30 || head.y &gt;= 30 || head.x &lt; 0 || head.y &lt; 0) {
+        alert(&quot;Game over!&quot;);
+        window.location.reload();
+    }
+    //咬到自己
+    for (var i = 0; i &lt; snake.length - 1; i++) {
+        if (head.x == snake[i].x &amp;&amp; head.y == snake[i].y) {
+            alert(&quot;Game over!&quot;);
+            window.location.reload();
+        }
+    }
+}
+//蛇自动走
+function moveClock() {
+    moveSnake(head.d);
+}
+var isMove = false;
+function beginGame() {
+    !isMove &amp;&amp; setInterval(moveClock, 300);
+    isMove = true;
+}
+
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
 </code></pre>
+<p>未停更</p>
 
             </div>
             
@@ -408,7 +577,7 @@ int main(){
     </li>
     <li class="post-copyright-link">
       <strong class="language" data-lan="link">本文链接：</strong>
-      <a href="https://Kangth9039.github.io/post/p1001/" title="P1001">https://Kangth9039.github.io/post/p1001/</a>
+      <a href="https://Kangth9039.github.io/post/game/" title="game">https://Kangth9039.github.io/post/game/</a>
     </li>
     <li class="post-copyright-license">
       <strong class="language" data-lan="copyright">版权声明： </strong>
@@ -417,18 +586,16 @@ int main(){
   </ul>
   <div class="tags">
     
-      <a href="https://Kangth9039.github.io/tag/solution/"># solution</a>
-    
   </div>
   <div class="nav">
     <div class="nav-prev">
       
-        <i class="fa fa-chevron-left"></i>
-        <a class="nav-pc-next" title="关于" href="https://Kangth9039.github.io/post/about/">关于</a class="nav-pc-next">
-        <a class="nav-mobile-prev" title="关于" href="https://Kangth9039.github.io/post/about/">上一篇</a>
-      
     </div>
     <div class="nav-next">
+      
+        <a class="nav-pc-next" title="联机代码-Zhoumy提供" href="https://Kangth9039.github.io/post/lian-ji-dai-ma-zhoumy-ti-gong/">联机代码-Zhoumy提供</a>
+        <a class="nav-mobile-next" title="联机代码-Zhoumy提供" href="https://Kangth9039.github.io/post/lian-ji-dai-ma-zhoumy-ti-gong/">下一篇</a>
+        <i class="fa fa-chevron-right"></i>
       
     </div>
   </div>
